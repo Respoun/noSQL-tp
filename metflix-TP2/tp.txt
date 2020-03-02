@@ -1,0 +1,129 @@
+Q : Après avoir installé MongoDB, lister les DB fournies par défaut (ds l'installation) ?
+
+Indice :  show dbs
+# S : Les db qui existent par défaut : test (0.078GB) et 1autre local qui s'appelle' "local" (0.078GB) !
+
+##  Pour la suite, fournir la Qry en SQL (la syntaxe sans l'executer) et Qry en MongoDB (la syntaxe et executer la Qry ds le shell de MongoDB)
+
+
+#########################################################################
+#####                                insertOne()                    #####
+
+Q : Créer 1è DB "metflix" qui contient 1collection "movies" dans laquelle on trouve les documents suivants et afficher le résultat ds le shell :
+  title = Rocky ; year = 1976
+  title = Rocky ; year = 1976 ; _id = tt0075148
+  title = Rocky ; year = 1976 ; _id = tt0075148
+  title = Rocky ; year = 1976
+
+  Indice : utiliser insertOne(), par ex : insertOne({"tilte" : ...})
+           utiliser findOne() et find().pretty()
+
+  Rq : Si on ne précise pas l'Id, il sera crée automtq par MongoDB.
+       On peux aussi indiquer un _id (naturel).
+       E11000 duplicate key error collection
+  Rq : 1è caractéristique de MongoDB : Redondonce !
+
+Q : A quoi corresp. la valeur corresp. de l' _id (lorsqu'il est créé automtq par MongoDB) ?
+
+  indice : date | serverAddress | N° PID (processus)| count
+
+#########################################################################
+#####                                insertMany()                   #####
+
+Q : Supp la dernière collection, la recréer en y insérant les documents suivants :
+  title = Rocky, year = 1976, _id = tt0075148
+  title = Jaws, year = 1975, imdb = tt0073195
+  title = Mad Max 2 : The Road Warrior, year = 1981, imdb = tt0082694
+  title = Raiders of the Lost Ark, year = 1981, imdb = tt0082971
+
+
+  Indice : utiliser insertMany(), par ex : insertMany([{"title" : ...}, {"title" : ...}])
+
+#########################################################################
+#####                          find avec des paramètres             #####
+
+Q : Afficher ts les documents de la collection movies, le tout 1è document, le(s) document(s) où on trouve les films produits en 1981, le document où on trouve le film qui porte le titre "Jaws" ?
+
+  Indice : utiliser find().pretty(), findOne(), find({"title":"Jaws"}).pretty()
+
+#########################################################################
+#####                                MongoDB & Python               #####
+
+Q : Installer pymongo (API officiel Python pr MongoDB), se connecter à la DB "metflix" et retrouver les resultats de la dernière question (à l'aide un script Python) ?
+
+
+Q : Supprimer la DB "metflix". A l'aide de Python, recréer la DB, y insérer les données et  verifier que vs retrouvez les resultats avant la suppression de la DB ?
+
+
+from pymongo import MongoClient
+from pprint import pprint
+
+client = MongoClient('localhost', 27017)
+
+#My metflix DB
+mydb = client["metflix"]
+mycol = mydb["movies"]
+
+myData = [{"title": "Rocky","year": 1976,"imdb": "tt0073194"},{"title": "Mad Max 2 : The Road Warrior", "year": 1981, "imdb": "tt0082694"},{"title": "Raiders of the Lost Ark", "year": 1981, "imdb": "tt0082971"},{"title": "Jaws", "year": 1975, "imdb": "tt0073195"}]
+
+mycol.insert_many(myData)
+
+pprint("New collection created")
+
+mydoc = mycol.find()
+
+for data in mydoc:
+  pprint(data)
+
+client.drop_database(mydb)
+
+
+
+Q : A l'aide de Python :
+  - Déclarer 1dict qui porte votre nom et prénom,
+  - Se connecter à la DB "metflix", créer une collection "users",
+  - Inserer le dict ds la collection "users" (en gérant les exceptions, i.e en indiquant try except lors de l'insertion).
+  - Inserer une 2è fois le dict ds la même collection "users" ?
+  - Que s'est-il passé ? Intérprétation ?
+
+  from pymongo import MongoClient
+  from pprint import pprint
+
+  client = MongoClient('localhost', 27017)
+
+  #My metflix DB
+  mydb = client["metflix"]
+  mycol = mydb["users"]
+
+  mydict = { "firstname": "Fitamant", "lastname": "guillaume" }
+
+  try:
+      x = mycol.insert_one(mydict)
+      pprint("New User created")
+  except Exception as e:
+      print("mongo: " + str(e))
+
+  Indice : second insert failed: E11000 duplicate key error collection: metflix.users index: _id_ dup key: { : ObjectId('5e1e450279283a025451a673') }
+
+Impossible de créer deux fois le même utilisateur, avec le même ID
+
+
+
+
+
+Q : Créer 1BD MySQL (en groupe) sur Azure pour un blog où :
+  - Des authors créent 1compte, s'identifient et se connectent.
+  - Les authors fournissent les infos "minimales" suivantes pr s'inscrire' : username et password (appeler vos objets comme je le mentionne, i.e authors, username, password).
+  - Les authors publient des posts (ayant un title, une date et un ou plusieurs tags, les tags sont obligatoires pr valider la publication d'1post').
+  - Les visiteurs du blog peuvent laisser des commentaires sur ces posts. Pr ce faire, ils renseignent les infos suivantes : name et email (optionnel).
+  - Obligatoire : réaliser le diagramme des classes et le modele physique des données.
+  - Nourissez la DB en publiant des posts et en laissant des commentaires (par vs-mêmes).
+  - Afficher 1post écrit par un certain auteur avec les tags et les comments qui vont avec ? (et indiquer combien de tables avez-vs utilisé pour cette Qry ?)
+
+Q : Créer la même DB avec MongoDB, réaliser la même Qry, noter combien de collections sollicitez-vs pr faire la Qry ?
+
+
+Q : Cmnt faire 1restore d'1DB ? Telecharger le directory "Projet_1_MongoDB" et restorer la DB ? Pr montrer que vs avez réussi la manip, rép aux Q suivantes :
+  - Combien de collections ds la DB ? Leurs noms ? Combien de documents ds chaq collection ?
+  - Trouver le nombre secret ?
+  - A l'aide d'1 script Python' et en se limtant à la collection des funny numbers, trouver la somme des nombres dont le modulo 3 est égale à 0 ?
