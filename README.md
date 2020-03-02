@@ -1,1 +1,6 @@
-# noSQL-tp
+# noSQL-TP
+
+Guillaume FITAMANT Ingésup B3
+
+TP2: METFLIX
+TP3: MOVIES

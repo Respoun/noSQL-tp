@@ -9,10 +9,10 @@ mydb = client["movies_artists"]
 myColMovies = mydb["movies"]
 myColArtists = mydb["artists"]
 
-with open('movie_collection.json') as f:
+with open('json/movie_collection.json') as f:
     file_data_movie = json.load(f)
 
-with open('artist_collection.json') as f:
+with open('json/artist_collection.json') as f:
     file_data_artist = json.load(f)
 
 try:
